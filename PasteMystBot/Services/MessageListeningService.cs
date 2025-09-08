@@ -32,6 +32,11 @@ internal sealed class MessageListeningService : BackgroundService
 
     private async Task DiscordClientOnMessageCreated(DiscordClient sender, MessageCreateEventArgs e)
     {
+        if (e.Author.IsBot)
+        {
+            return;
+        }
+
         if (_messagePastingService.IsChannelExempt(e.Channel))
         {
             return;
