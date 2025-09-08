@@ -1,6 +1,7 @@
 ﻿using DSharpPlus;
 using DSharpPlus.EventArgs;
 using Microsoft.Extensions.Hosting;
+using PasteMystBot.Configuration;
 
 namespace PasteMystBot.Services;
 
@@ -10,16 +11,21 @@ namespace PasteMystBot.Services;
 internal sealed class MessageListeningService : BackgroundService
 {
     private readonly DiscordClient _discordClient;
+    private readonly ConfigurationService _configurationService;
     private readonly MessagePastingService _messagePastingService;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MessageListeningService" /> class.
     /// </summary>
     /// <param name="discordClient">The Discord client.</param>
+    /// <param name="configurationService">The configuration service.</param>
     /// <param name="messagePastingService">The message pasting service.</param>
-    public MessageListeningService(DiscordClient discordClient, MessagePastingService messagePastingService)
+    public MessageListeningService(DiscordClient discordClient,
+        ConfigurationService configurationService,
+        MessagePastingService messagePastingService)
     {
         _discordClient = discordClient;
+        _configurationService = configurationService;
         _messagePastingService = messagePastingService;
     }
 
@@ -32,7 +38,8 @@ internal sealed class MessageListeningService : BackgroundService
 
     private async Task DiscordClientOnMessageCreated(DiscordClient sender, MessageCreateEventArgs e)
     {
-        if (e.Author.IsBot)
+        GuildConfiguration configuration = _configurationService.GetGuildConfiguration(e.Guild) ?? new GuildConfiguration();
+        if (e.Author.IsBot && configuration.IgnoreBots)
         {
             return;
         }

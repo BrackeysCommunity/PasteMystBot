@@ -25,6 +25,12 @@ internal sealed class GuildConfiguration
     public int CountThreshold { get; set; } = -1;
 
     /// <summary>
+    ///     Gets or sets a value indicating whether to ignore messages from bots.
+    /// </summary>
+    /// <value><see langword="true" /> to ignore bots; otherwise, <see langword="false" />.</value>
+    public bool IgnoreBots { get; set; } = true;
+
+    /// <summary>
     ///     Gets or sets the array of exempt channels for auto-pasting.
     /// </summary>
     /// <value>An array of channel IDs to ignore when auto-pasting a message.</value>
